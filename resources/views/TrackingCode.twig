@@ -6,6 +6,11 @@
 {% if alwaysEnableTracking == 'false' %}
 	{% set alwaysEnableTracking ='' %}
 {% endif %}
+
+{% set usedAmount = 0 %} 
+{% set usedItemAmount = 0 %} 
+
+
 {% if debugTracking %}
 	<script>
 		function gtmLog(message, description = false) {
@@ -1867,13 +1872,11 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 			{% if data is defined %}
 
 				{% for amount in data.order.amounts %}
-					<script>
-						console.log('amount: ' + {{ amount }});
-						console.log('amount.currency: ' + {{ amount.currency }});
-						console.log('data.totals.currency: ' + {{ data.totals.currency }});
-						console.log('------------------------------------')
-					</script>
 					{% if amount.currency == data.totals.currency %}
+					<script>
+						conosole.log('in if condition for amount.currency == data.totals.currency');
+						conosole.log('amount: ' + {{ amount|json_encode|raw }})
+					</script>
 						{% set usedAmount = amount %} 
 					{% endif %}
 				{% endfor %}
