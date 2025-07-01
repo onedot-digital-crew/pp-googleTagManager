@@ -1873,10 +1873,6 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 				{% for amount in data.order.amounts %}
 					{% if amount.currency == data.totals.currency %}
-					<script>
-						conosole.log('in if condition for amount.currency == data.totals.currency');
-						conosole.log('amount: ' + {{ amount|json_encode|raw }})
-					</script>
 						{% set usedAmount = amount %} 
 					{% endif %}
 				{% endfor %}
