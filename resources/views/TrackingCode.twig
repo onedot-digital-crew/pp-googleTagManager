@@ -1867,16 +1867,14 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 			{% if data is defined %}
 
 				{% for amount in data.order.amounts %}
-				<script>
-					console.log('amount.currency: ' + {{ amount.currency }});
-					console.log('data.totals.currency: ' + {{ data.totals.currency }});
-					console.log('-------------------------------------------');
-					console.log('amount.currency json: ' + {{ amount.currency | json_encode }});
-					console.log('data.totals.currency json: ' + {{ data.totals.currency | json_encode }});
-					console.log('-------------------------------------------');
-				</script>
+					<script>
+						console.log('amount: ' + {{ amount }});
+						console.log('amount.currency: ' + {{ amount.currency }});
+						console.log('data.totals.currency: ' + {{ data.totals.currency }});
+						console.log('------------------------------------')
+					</script>
 					{% if amount.currency == data.totals.currency %}
-						{% set used_amount = amount %} 
+						{% set usedAmount = amount %} 
 					{% endif %}
 				{% endfor %}
 				
@@ -1885,10 +1883,10 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 				{% set orderItemSumNet = data.totals.itemSumNet %}
 				{% set orderShippingNet = data.totals.shippingNet %}
 				{% set couponDiscount = data.totals.couponValue %}
-				{% set vatValue = used_amount.vatTotal %}
+				{% set vatValue = usedAmount.vatTotal %}
 
 				{% if config("ODTracking.showNetPrices") == "false" %}
-					{% if used_amount.vatTotal == 0 %}
+					{% if usedAmount.vatTotal == 0 %}
 						{% set orderTotal = data.totals.totalNet %}
 						{% set orderItemSum = data.totals.itemSumNet %}
 						{% set orderRebate = data.totals.itemSumRebateNet %}
@@ -2008,7 +2006,7 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 										{% for amount in item.amounts %}
 											{% if amount.currency == data.totals.currency %}
-												{% set used_item_amount = amount %} 
+												{% set usedItemAmount = amount %} 
 											{% endif %}
 										{% endfor %}
 
@@ -2102,22 +2100,22 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 										{% set currentVariationId = item.itemVariationId|trimNewlines %}
 										{% set variationNumber = singleOrderItem.documents[0].data.variation.number|trimNewlines %}
-										{% set priceNet = used_item_amount.priceNet %}
-										{% set amountNet = used_item_amount.priceNet * item.quantity %}
+										{% set priceNet = usedItemAmount.priceNet %}
+										{% set amountNet = usedItemAmount.priceNet * item.quantity %}
 
 
 
 										{% if config("ODTracking.showNetPrices") == "false" %}
 											{% if data.order.amounts[0].vatTotal == 0 %}
-												{% set price = used_item_amount.priceNet %}
-												{% set amount = used_item_amount.priceNet * item.quantity %}
+												{% set price = usedItemAmount.priceNet %}
+												{% set amount = usedItemAmount.priceNet * item.quantity %}
 											{% else %}
-												{% set price = used_item_amount.priceGross %}
-												{% set amount = used_item_amount.priceGross * item.quantity %}
+												{% set price = usedItemAmount.priceGross %}
+												{% set amount = usedItemAmount.priceGross * item.quantity %}
 											{% endif %}
 										{% else %}
-											{% set price = used_item_amount.priceNet %}
-											{% set amount = used_item_amount.priceNet * item.quantity %}
+											{% set price = usedItemAmount.priceNet %}
+											{% set amount = usedItemAmount.priceNet * item.quantity %}
 										{% endif %}
 
 										{% if singleOrderItem.documents[0].data.prices.rrp is not null %}
