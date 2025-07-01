@@ -1867,11 +1867,19 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 			{% if data is defined %}
 
 				{% for amount in data.order.amounts %}
+				<script>
+					console.log('amount.currency: ' + {{ amount.currency }});
+					console.log('data.totals.currency: ' + {{ data.totals.currency }});
+					console.log('-------------------------------------------');
+					console.log('amount.currency json: ' + {{ amount.currency | json_encode }});
+					console.log('data.totals.currency json: ' + {{ data.totals.currency | json_encode }});
+					console.log('-------------------------------------------');
+				</script>
 					{% if amount.currency == data.totals.currency %}
 						{% set used_amount = amount %} 
 					{% endif %}
 				{% endfor %}
-				<script>console.log('used_amount: ' + {{ used_amount }});</script>
+				
 				{% set orderTotalNet = data.totals.totalNet %}
 				{% if debugTracking %} <script>console.log('orderTotalNet: ' + {{ orderTotalNet }});</script> {% endif %}
 				{% set orderItemSumNet = data.totals.itemSumNet %}
