@@ -1866,15 +1866,21 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 			{% if data is defined %}
 
+				{% for amount in data.order.amounts %}
+					{% if amount.currency == data.totals.currency %}
+						{% set used_amount = amount %} 
+					{% endif %}
+				{% endfor %}
+
 				{% set orderTotalNet = data.totals.totalNet %}
 				{% if debugTracking %} <script>console.log('orderTotalNet: ' + {{ orderTotalNet }});</script> {% endif %}
 				{% set orderItemSumNet = data.totals.itemSumNet %}
 				{% set orderShippingNet = data.totals.shippingNet %}
 				{% set couponDiscount = data.totals.couponValue %}
-				{% set vatValue = data.order.amounts[0].vatTotal %}
+				{% set vatValue = used_amount.vatTotal %}
 
 				{% if config("ODTracking.showNetPrices") == "false" %}
-					{% if data.order.amounts[0].vatTotal == 0 %}
+					{% if used_amount.vatTotal == 0 %}
 						{% set orderTotal = data.totals.totalNet %}
 						{% set orderItemSum = data.totals.itemSumNet %}
 						{% set orderRebate = data.totals.itemSumRebateNet %}
@@ -1992,6 +1998,12 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 								  {% if item.itemVariationId > 0 and not ("[-]" in item.orderItemName) %}
 
+										{% for amount in item.amounts %}
+											{% if amount.currency == data.totals.currency %}
+												{% set used_item_amount = amount %} 
+											{% endif %}
+										{% endfor %}
+
 										{% set singleOrderItem = services.item.getVariation(item.itemVariationId) %}
 
 										{% set categories = "" %}
@@ -2009,6 +2021,8 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 										{% set defaultCategoryDefaultObj = services.category.get(defaultCategoryId) %}
 										{% set defaultCategory1name = defaultCategoryDefaultObj.details[0].name %}
 										{% set parentCategory1Id = singleOrderItem.documents[0].data.defaultCategories[0].parentCategoryId %}
+
+
 
 										{% if parentCategory1Id != '' %}
 											{% set parentCategory1Obj = services.category.get(parentCategory1Id) %}
@@ -2080,20 +2094,22 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 										{% set currentVariationId = item.itemVariationId|trimNewlines %}
 										{% set variationNumber = singleOrderItem.documents[0].data.variation.number|trimNewlines %}
-										{% set priceNet = item.amounts[0].priceNet %}
-										{% set amountNet = item.amounts[0].priceNet * item.quantity %}
+										{% set priceNet = used_item_amount.priceNet %}
+										{% set amountNet = used_item_amount.priceNet * item.quantity %}
+
+
 
 										{% if config("ODTracking.showNetPrices") == "false" %}
 											{% if data.order.amounts[0].vatTotal == 0 %}
-												{% set price = item.amounts[0].priceNet %}
-												{% set amount = item.amounts[0].priceNet * item.quantity %}
+												{% set price = used_item_amount.priceNet %}
+												{% set amount = used_item_amount.priceNet * item.quantity %}
 											{% else %}
-												{% set price = item.amounts[0].priceGross %}
-												{% set amount = item.amounts[0].priceGross * item.quantity %}
+												{% set price = used_item_amount.priceGross %}
+												{% set amount = used_item_amount.priceGross * item.quantity %}
 											{% endif %}
 										{% else %}
-											{% set price = item.amounts[0].priceNet %}
-											{% set amount = item.amounts[0].priceNet * item.quantity %}
+											{% set price = used_item_amount.priceNet %}
+											{% set amount = used_item_amount.priceNet * item.quantity %}
 										{% endif %}
 
 										{% if singleOrderItem.documents[0].data.prices.rrp is not null %}
@@ -2163,7 +2179,7 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 
 						    dataLayer.push ({
 					            "event": "orderConfirmation",
-                                "orderData": orderData,
+											"orderData": orderData,
 					            "orderItems" : orderItems
 					        });
 						});
