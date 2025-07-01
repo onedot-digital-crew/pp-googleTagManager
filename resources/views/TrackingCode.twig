@@ -1871,7 +1871,7 @@ const NEWSLETTER_OPT_IN         = "newsletter-opt-in";
 						{% set used_amount = amount %} 
 					{% endif %}
 				{% endfor %}
-
+				<script>console.log('used_amount: ' + {{ used_amount }});</script>
 				{% set orderTotalNet = data.totals.totalNet %}
 				{% if debugTracking %} <script>console.log('orderTotalNet: ' + {{ orderTotalNet }});</script> {% endif %}
 				{% set orderItemSumNet = data.totals.itemSumNet %}
